@@ -114,7 +114,7 @@ cdfs(){
         rm -rf $WORKDIR/dummysys/var/*
         rm -rf $WORKDIR/dummysys/etc/*
     else
-        mkdir -p $WORKDIR/ISOTMP/live
+        mkdir -p $WORKDIR/ISOTMP/casper
         mkdir -p $WORKDIR/ISOTMP/install
         mkdir -p $WORKDIR/ISOTMP/preseed
         mkdir -p $WORKDIR/dummysys/dev
@@ -404,8 +404,8 @@ cdfs(){
     update-initramfs -t -c -k $(uname -r)
 
     echo -e $"\nCopying your kernel and initrd to the Live CD."
-    cp /boot/vmlinuz-$(uname -r) $WORKDIR/ISOTMP/live/vmlinuz
-    cp /boot/initrd.img-$(uname -r) $WORKDIR/ISOTMP/live/initrd.img
+    cp /boot/vmlinuz-$(uname -r) $WORKDIR/ISOTMP/casper/vmlinuz
+    cp /boot/initrd.img-$(uname -r) $WORKDIR/ISOTMP/casper/initrd.img
 
     # STEP 3 - Make filesystem.squashfs
 
@@ -414,8 +414,8 @@ cdfs(){
         touch $WORKDIR/remastersys.log
     fi
 
-    if [ -f $WORKDIR/ISOTMP/live/filesystem.squashfs ]; then
-        rm -f $WORKDIR/ISOTMP/live/filesystem.squashfs
+    if [ -f $WORKDIR/ISOTMP/casper/filesystem.squashfs ]; then
+        rm -f $WORKDIR/ISOTMP/casper/filesystem.squashfs
     fi
 
     echo -e $"\nCreating filesystem.squashfs. It will take a while, so be patient...\n"
@@ -439,7 +439,7 @@ cdfs(){
         done
     fi
 
-    time mksquashfs $REALFOLDERS $WORKDIR/ISOTMP/live/filesystem.squashfs -no-duplicates $SQUASHFSOPTS -e \
+    time mksquashfs $REALFOLDERS $WORKDIR/ISOTMP/casper/filesystem.squashfs -no-duplicates $SQUASHFSOPTS -e \
     root/.thumbnails \
     root/.cache \
     root/.bash_history \
@@ -497,7 +497,7 @@ iso(){
     fi
 
     # check to see if the cd filesystem exists
-    if [ ! -f "$WORKDIR/ISOTMP/live/filesystem.squashfs" ]; then
+    if [ ! -f "$WORKDIR/ISOTMP/casper/filesystem.squashfs" ]; then
         echo -e $"The CD file system is missing. Either there was a problem creating the compressed file system, or you are trying to run the command \"remastersys dist iso\" before \"remastersys dist cdfs\"."
         exit 1
     fi
